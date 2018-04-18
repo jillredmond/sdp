@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+   <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>   
+    
+<title>Add Assignment</title>
+</head>
+<body>
+
+ 	<form action="#" th:action="@{/addBook}"  th:object="${book}" method="post">
+<table>
+			<tr>
+			<td>Book Title</td>
+			 <td><input type="text" th:field="*{title}" /></td>
+	 		</tr>  
+			<tr>
+				<td>Author </td>
+				 <td><input type="text" th:field="*{author}" /></td>
+				 </tr><tr>
+				<td>category </td>
+				 <td><input type="text" th:field="*{category}" /></td>
+				 </tr>
+				 <tr>
+				<td>stock </td>
+				 <td><input th:field="*{stock}" /></td>
+				 </tr>
+				 <tr>
+				<td>Price </td>
+				 <td><input th:field="*{price}" /></td>
+				 </tr>
+				 
+				 <tr>
+					<td><button type="submit">Submit post</button></td>
+					</tr>
+		</table>
+	
+	</form>  
+	
+<script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

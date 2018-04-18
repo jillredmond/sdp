@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Book Search</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+	
+
+
+	<form action="/book/search" method="post" th:object="${category}">
+		<div id="container"></div>
+	
+		<div th:if="${categories != null}">
+
+			<div id="containter"></div>
+		
+			<div id="searchType">
+			
+			
+			 Title: <input type="text" name="title" ><input type="submit" value="Submit"><br>
+			 Author: <input type="text" name="author"><input type="submit" value="Submit"><br>
+			Category:
+			<select name="category">
+
+				<option th:each="category : ${categories}" th:value="${category}"
+					th:text="${category}"></option>
+			</select> <input type="submit" value="Submit">
+			
+			
+			
+		</div>
+		</div>
+		<select name="order">
+			<option value="ascending">Ascending</option>
+			<option value="descending">Descending</option>
+
+		</select>
+
+		
+
+	</form>
+
+
+	<div th:if="${links != null}">
+
+		<ul>
+			<li th:each="item : ${links}" th:utext="${item}"></li>
+		</ul>
+	</div>
+	<div th:unless="${links != null}">
+		<div>No Books existed with the selected criteria.</div>
+	</div>
+</body>
+<script th:inline="javascript">
+
+
+
+
+</script>
+</html>
