@@ -13,7 +13,16 @@ import javax.persistence.Id;
 	    private Long id;
 		private String comment;
 		private double rating;
+		String book;
 		
+		public String getBook() {
+			return book;
+		}
+
+		public void setBook(String book) {
+			this.book = book;
+		}
+
 		public Rating() {
 			super();
 		}

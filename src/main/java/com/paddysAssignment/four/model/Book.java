@@ -30,7 +30,7 @@ public class Book implements Serializable {
 	    @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	    public List<Purchase> purchase;
 	    
-	    @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	    @OneToMany(fetch=FetchType.LAZY)
 	    public List<Rating> rating;
 
 	 	public Book() {
@@ -50,8 +50,6 @@ public class Book implements Serializable {
 			this.rating = rating;
 		}
 
-
-
 		public Book(Long id, String author, String title, String category, double price) {
 			super();
 			this.id = id;
@@ -61,46 +59,29 @@ public class Book implements Serializable {
 			this.price = price;	
 		}
 		
-		
-		
-		
-		
-		
 		public int getStock() {
 			return stock;
 		}
-
-
 
 		public void setStock(int stock) {
 			this.stock = stock;
 		}
 
-
-
 		public List<Purchase> getPurchase() {
 			return purchase;
 		}
-
-
 
 		public void setPurchase(List<Purchase> purchase) {
 			this.purchase = purchase;
 		}
 
-
-
 		public List<Rating> getRating() {
 			return rating;
 		}
 
-
-
 		public void setRating(List<Rating> rating) {
 			this.rating = rating;
 		}
-
-
 
 		public Long getId() {
 			return id;
@@ -132,7 +113,11 @@ public class Book implements Serializable {
 		public void setPrice(double price) {
 			this.price = price;
 		}
-	 	
-	 	
+		
+
+		public void addRating(Rating rating){
+
+			getRating().add(rating);
+		}
 
 }

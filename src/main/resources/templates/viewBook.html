@@ -10,11 +10,56 @@
 <title>View Book</title>
 </head>
 <body>
+<div>
+ <h4>Book id <h4 th:text="${bookId}" /> </h4>  
+    <h4>Book Title <h4 th:text="${bookTitle}" /> </h4>  
+     <h4>Author <h4 th:text="${bookAuthor}" /> </h4> 
+      <h4>Category <h4 th:text="${bookCategory}" /> </h4> 
+       <h4>Price <h4 th:text="${bookPrice}" /> </h4> 
+        <h4>Stock <h4 th:text="${bookStock}" /> </h4> 
+        </div>
+        
+        
+        	<h2>Rating & Review</h2>
+				<form th:action="@{/viewBook} + ${bookId}" th:object="${rating}"
+					method="post">
 
-<!--   <h4>Book Title <h4 th:text="${book.title}" /> </h4> -->
+					<div class="radio">
+						<label><input type="radio" name="rating" value=1>1
+							Star</label>
+					</div>
+					<div class="radio">
+						<label><input type="radio" name="rating" value=2>2
+							Star</label>
+					</div>
+					<div class="radio disabled">
+						<label><input type="radio" name="rating" value=3>3
+							star</label>
+					</div>
+					<div class="radio disabled">
+						<label><input type="radio" name="rating" value=4>4
+							star</label>
+					</div>
+					<div class="radio disabled">
+						<label><input type="radio" name="rating" value=5>5
+							star</label>
+					</div>
+
+					<div class="form-group">
+						<label for="comment">Review:</label>
+						<textarea  th:field="*{comment}" class="form-control" rows="5" id="comment"></textarea>
+					</div>
+
+					<input type="hidden" name="bookId" th:value="${book.id}" />
 
 
+					<div class="form-group">
+						<button type="submit" class="btn btn-success">Create</button>
 
+					</div>
+
+				</form>
+ 
 </body>
 <script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>
 <script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>

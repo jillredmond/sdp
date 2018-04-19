@@ -1,8 +1,11 @@
 package com.paddysAssignment.four.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale.Category;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -28,8 +31,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.paddysAssignment.four.exception.ResourceNotFoundException;
 import com.paddysAssignment.four.model.Book;
+import com.paddysAssignment.four.model.Rating;
+import com.paddysAssignment.four.model.User;
 import com.paddysAssignment.four.repository.BookRepository;
 import com.paddysAssignment.four.repository.PurchaseRepository;
+import com.paddysAssignment.four.repository.RatingRepository;
 import com.paddysAssignment.four.repository.UserRepository;
 
 //@RestController
@@ -43,6 +49,8 @@ public class BookController {
 	private UserRepository userRepository;
 	@Autowired
 	private PurchaseRepository purchaseRepository;
+	@Autowired
+	private RatingRepository ratingRepository;
 	
 	@GetMapping("/bookSearch")
 	public String bookSearch(ModelMap map) {
@@ -56,16 +64,8 @@ public class BookController {
 		return "bookSearch";
 
 	}
-	@RequestMapping(value = "/viewBook{id}", method = RequestMethod.GET)
-	public String book(@PathVariable String id) {
-		
-		
-		
-		return "viewBook"; 
-		
-	}
 	
-	//@RequestMapping(value="/bookSearch", method=RequestMethod.GET)
+
 	@PostMapping("/bookSearch")
 	public String bookSearchPost(ModelMap map, @ModelAttribute Book book, Model model) {
 		List<Book> books = bookRepository.findAll();
@@ -141,6 +141,82 @@ public class BookController {
 		return "bookSearch";
 
 	}
+	
+	@RequestMapping(value = "/viewBook{id}", method = RequestMethod.GET)
+	public String book(@PathVariable(value = "id") Long bookId, @ModelAttribute Book book, Model model) {
+
+		book = bookRepository.findById(bookId)
+				.orElseThrow(() -> new ResourceNotFoundException("Book", "id", bookId));
+		Rating rating = new Rating();
+		
+		String title = book.getTitle();
+		String author = book.getAuthor();
+		String category = book.getCategory();
+		double price = book.getPrice();
+		int stock = book.getStock();
+		
+		
+		model.addAttribute("bookId", bookId);
+		model.addAttribute("book", book);
+		model.addAttribute("bookAuthor", author);
+		model.addAttribute("bookCategory", category);
+		model.addAttribute("bookPrice", price);
+		model.addAttribute("bookStock", stock);
+		model.addAttribute("bookTitle", title);
+		model.addAttribute("rating", rating);
+		
+		
+		return "viewBook"; 
+		
+	}
+	
+	
+
+	@PostMapping("/viewBook{id}")
+	public String createRating(@PathVariable(value = "id") Long bookId,Book book, ModelMap map, Principal principal,
+			@ModelAttribute("Rating") @Valid @RequestBody Rating rating,UserRegistrationController userDto, BindingResult result,  Model model) {
+		
+		Rating r = new Rating();
+		rating.setId(null);
+
+		Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
+		String email = loggedInUser.getName();
+		
+		User user = userRepository.findByEmail(email);
+
+		String bookTitle = rating.getBook();
+		
+		book = bookRepository.findById(bookId)
+				.orElseThrow(() -> new ResourceNotFoundException("Book", "id", bookId));
+		
+
+		user.addRating(rating);
+		book.addRating(rating);
+		
+		ratingRepository.save(rating);
+		bookRepository.save(book);
+		userRepository.save(user);
+		
+		model.addAttribute("rating",rating.getRating());
+		model.addAttribute("comment",rating.getComment());
+		model.addAttribute("bookId", book.getId());
+		
+		return "redirect:/viewBook" + book.getId();
+
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	 // Get All Books
 //  @GetMapping("/books")

@@ -2,6 +2,8 @@ package com.paddysAssignment.four.model;
 
 
 import javax.persistence.*;
+import javax.validation.Valid;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -30,7 +32,7 @@ public class User {
     @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     public List<Purchase> purchase;
     
-    @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+    @OneToMany(fetch=FetchType.LAZY)
     public List<Rating> rating;
     
     
@@ -143,4 +145,9 @@ public class User {
                 ", roles=" + roles +
                 '}';
     }
+
+	public void addRating(Rating rating){
+
+		getRating().add(rating);
+	}
 }

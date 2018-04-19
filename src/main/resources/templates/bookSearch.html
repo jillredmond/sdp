@@ -29,7 +29,10 @@
 	</form>
 <div>
 		<ul>
-				<a th:href="@{/viewBook(id=${bookId})}">View book</a>
+				<div>
+				 <span> <a href="/" th:href="@{/viewBook} + ${bookId}">View book
+				</a></span></div> 
+					
 		</ul>
 	</div>
 </body>
