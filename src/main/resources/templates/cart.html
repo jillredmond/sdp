@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Your Cart</title>
+</head>
+<body>
+<h2> Here are all the books in your cart:</h2>
+		<ul>
+			<li th:each="item : ${bookNames}" th:utext="${item}"></li>
+		</ul>
+		
+		
+	
+	 	   <form action="/cart" method="post">
+	<input type="hidden" name="ids" th:value="${ids}" />
+  		 <input type="submit" value="Purchase">
+    </form>
+		
+
+</body>
+</html>

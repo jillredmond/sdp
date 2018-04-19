@@ -10,6 +10,8 @@ import com.paddysAssignment.four.model.Book;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
 	
+	
+	
 	Book findById(long id);
 	Book findByTitle(String title);
 //	Book findOne(Long bookId);

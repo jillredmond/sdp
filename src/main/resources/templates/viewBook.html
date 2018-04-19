@@ -20,7 +20,14 @@
         </div>
         
         
-        	<h2>Rating & Review</h2>
+	<div>
+		<span> <a href="/" th:href="@{/addToCart} + ${book.id}">Add to
+				cart </a></span>
+	</div>
+        
+        
+        
+        	<h2>Add a Rating & a Review</h2>
 				<form th:action="@{/viewBook} + ${bookId}" th:object="${rating}"
 					method="post">
 
@@ -59,7 +66,13 @@
 					</div>
 
 				</form>
- 
+				<h2>Reviews:</h2>
+		<div th:each="rating : ${book.rating}">
+		<h3 th:text="${rating.rating}"/>
+		<h3 th:text="${rating.comment}"/>
+
+
+</div>
 </body>
 <script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>
 <script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>

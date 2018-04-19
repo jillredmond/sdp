@@ -26,6 +26,7 @@ public class Book implements Serializable {
 	 	private String category;
 	 	private int stock;
 	 	private double price;
+	
 	 	
 	    @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	    public List<Purchase> purchase;
@@ -37,7 +38,7 @@ public class Book implements Serializable {
 	 		super();		
 	 	}
 	
-		public Book(Long id, String author, String title, String category, int stock, double price,
+		public Book(Long id, String author, String title, String category, int stock, double price, 
 				List<Purchase> purchase, List<Rating> rating) {
 			super();
 			this.id = id;
@@ -46,9 +47,11 @@ public class Book implements Serializable {
 			this.category = category;
 			this.stock = stock;
 			this.price = price;
+
 			this.purchase = purchase;
 			this.rating = rating;
 		}
+
 
 		public Book(Long id, String author, String title, String category, double price) {
 			super();

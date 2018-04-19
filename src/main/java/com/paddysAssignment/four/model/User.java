@@ -19,6 +19,8 @@ public class User {
     private String lastName;
     private String email;
     private String password;
+    private String address;
+    private String pay;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
@@ -35,9 +37,70 @@ public class User {
     @OneToMany(fetch=FetchType.LAZY)
     public List<Rating> rating;
     
+    @OneToMany(fetch=FetchType.LAZY)
+    public List<Item> item;
+    
     
 
-    public User(Long id, String firstName, String lastName, String email, String password, Collection<Role> roles,
+    public User(Long id, String firstName, String lastName, String email, String password, String address, String pay,
+			Collection<Role> roles, List<Purchase> purchase, List<Rating> rating, List<Item> item) {
+		super();
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.password = password;
+		this.address = address;
+		this.pay = pay;
+		this.roles = roles;
+		this.purchase = purchase;
+		this.rating = rating;
+		this.item = item;
+	}
+
+	public List<Item> getItem() {
+		return item;
+	}
+
+	public void setItem(List<Item> item) {
+		this.item = item;
+	}
+
+	public User(Long id, String firstName, String lastName, String email, String password, String address, 
+			String pay, Collection<Role> roles, List<Purchase> purchase, List<Rating> rating) {
+		super();
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.password = password;
+		this.address = address;
+
+		this.pay = pay;
+		this.roles = roles;
+		this.purchase = purchase;
+		this.rating = rating;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+
+
+	public String getPay() {
+		return pay;
+	}
+
+	public void setPay(String pay) {
+		this.pay = pay;
+	}
+
+	public User(Long id, String firstName, String lastName, String email, String password, Collection<Role> roles,
 			List<Purchase> purchase, List<Rating> rating) {
 		super();
 		this.id = id;
@@ -150,4 +213,11 @@ public class User {
 
 		getRating().add(rating);
 	}
+	
+	public void addItem(Item item){
+
+		getItem().add(item);
+	}
+
+
 }

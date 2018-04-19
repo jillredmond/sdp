@@ -31,9 +31,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.paddysAssignment.four.exception.ResourceNotFoundException;
 import com.paddysAssignment.four.model.Book;
+import com.paddysAssignment.four.model.Item;
 import com.paddysAssignment.four.model.Rating;
 import com.paddysAssignment.four.model.User;
 import com.paddysAssignment.four.repository.BookRepository;
+import com.paddysAssignment.four.repository.ItemRepository;
 import com.paddysAssignment.four.repository.PurchaseRepository;
 import com.paddysAssignment.four.repository.RatingRepository;
 import com.paddysAssignment.four.repository.UserRepository;
@@ -51,6 +53,8 @@ public class BookController {
 	private PurchaseRepository purchaseRepository;
 	@Autowired
 	private RatingRepository ratingRepository;
+	@Autowired
+	private ItemRepository itemRepository;
 	
 	@GetMapping("/bookSearch")
 	public String bookSearch(ModelMap map) {
@@ -173,7 +177,7 @@ public class BookController {
 	
 
 	@PostMapping("/viewBook{id}")
-	public String createRating(@PathVariable(value = "id") Long bookId,Book book, ModelMap map, Principal principal,
+	public String createRating(@PathVariable(value = "id") Long bookId,Book book, ModelMap map,
 			@ModelAttribute("Rating") @Valid @RequestBody Rating rating,UserRegistrationController userDto, BindingResult result,  Model model) {
 		
 		Rating r = new Rating();
@@ -206,6 +210,77 @@ public class BookController {
 	}
 	
 	
+	
+	@GetMapping("/addToCart{id}")
+	public String addToCart(@PathVariable(value = "id") Long bookId) {
+
+		Book book = bookRepository.findById(bookId)
+				.orElseThrow(() -> new ResourceNotFoundException("Book", "id", bookId));
+
+		Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
+		String email = loggedInUser.getName();
+		User user = userRepository.findByEmail(email);
+		
+		Item item = new Item();
+		
+		item.setBookId(bookId);
+		user.addItem(item);
+		
+		itemRepository.save(item);
+		userRepository.save(user);
+		
+
+	return "addCart";
+	}
+	
+	@GetMapping("/cart")
+	public String cart(Model model) {
+		
+		Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
+				
+		User user = userRepository.findByEmail(loggedInUser.getName());
+		
+		ArrayList<Long> bookIds = new ArrayList<Long>();
+		ArrayList<String> bookNames = new ArrayList<String>();
+		
+		for(Item it:user.getItem()) {
+			bookIds.add(it.getBookId());
+		}
+
+		for (int i = 0; i < bookIds.size(); i++) {
+			Long itemId = bookIds.get(i);
+			
+			Book book = bookRepository.findById(itemId)
+					.orElseThrow(() -> new ResourceNotFoundException("Book", "id", itemId));
+			
+			String bookName = book.getTitle();
+			bookNames.add(bookName);
+			
+		}
+		model.addAttribute("bookNames", bookNames);
+		
+		
+		
+		
+		return "cart";
+		
+	}
+	
+
+	@PostMapping("/cart")
+	public String cartPost(Model model) {
+
+		Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();			
+		User user = userRepository.findByEmail(loggedInUser.getName());
+		
+	//	model.addAttribute("bookNames", bookNames);
+		
+		
+		return "cart";
+		
+	}
+	
+}
 	
 	
 	
@@ -294,4 +369,3 @@ public class BookController {
 //    }
 
 
-}
