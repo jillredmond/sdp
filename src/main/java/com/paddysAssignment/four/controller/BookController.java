@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -32,7 +33,7 @@ import com.paddysAssignment.four.repository.PurchaseRepository;
 import com.paddysAssignment.four.repository.UserRepository;
 
 //@RestController
-//@RequestMapping("/api")
+//@RequestMapping
 @Controller
 public class BookController {
 
@@ -43,87 +44,77 @@ public class BookController {
 	@Autowired
 	private PurchaseRepository purchaseRepository;
 	
-	@GetMapping("/allBooks")
-	public String showBooks(@ModelAttribute("book") @Valid Model model) {
-		
-		
-		return "allBooks";
+	@GetMapping("/bookSearch")
+	public String bookSearch(ModelMap map) {
+		// List<Book> books = bookRepository.findAll();
 
-		}
+		ArrayList<String> books = new ArrayList<String>();
+
+
+
+		map.addAttribute("books", books);
+		return "bookSearch";
+
+	}
+	@RequestMapping(value = "/viewBook{id}", method = RequestMethod.GET)
+	public String book(@PathVariable String id) {
+		
+		
+		
+		return "viewBook"; 
+		
+	}
 	
-
-	@PostMapping("/book/search")
-	public String bookSearchPost(ModelMap map, @ModelAttribute Category category) {
+	//@RequestMapping(value="/bookSearch", method=RequestMethod.GET)
+	@PostMapping("/bookSearch")
+	public String bookSearchPost(ModelMap map, @ModelAttribute Book book, Model model) {
 		List<Book> books = bookRepository.findAll();
-		System.out.println("=================================");
-		System.out.println(category.getOrder());
-		System.out.println(category.getAuthor());
-		System.out.println(category.getTitle());
-		System.out.println("=================================");
-		ArrayList<String> categories = new ArrayList<String>();
-		ArrayList<String> links = new ArrayList<String>();
+	//	ArrayList<String> books = new ArrayList<String>();
 
-		categories.add("Science Fiction");
-		categories.add("Romance");
-		categories.add("Travel");
-		categories.add("Science");
-		categories.add("History");
-		categories.add("Other");
+		if(book.getCategory()!="") {
+			for (int i = 0; i < books.size(); i++) {
+				if(books.get(i).getCategory().toLowerCase().equals((book.getCategory().toLowerCase()))) {
+					
+					Long bookId = books.get(i).getId();
+					String bookTitle = books.get(i).getTitle();
+					model.addAttribute("bookId", bookId);
+					model.addAttribute("bookTitle", bookTitle);
+					
+					
+				} else {
+					
+				}
+			}
+		}
 		
-		if (category.getAuthor() != "") {
+		if (book.getAuthor() != "") {
 
 			for (int i = 0; i < books.size(); i++) {
 
-				if (books.get(i).getAuthor().toLowerCase().contains((category.getAuthor().toLowerCase()))) {
-					String link = "";
+				if (books.get(i).getAuthor().toLowerCase().equals((book.getAuthor().toLowerCase()))) {
+					Long bookId = books.get(i).getId();
+					String bookTitle = books.get(i).getTitle();
+					model.addAttribute("bookId", bookId);
+					model.addAttribute("bookTitle", bookTitle);
 
-					System.out.println("=================================");
-					System.out.println("TEST");
-
-					link = "<a href=\"http://localhost:8080/book/" + books.get(i).getId() + "\"> "
-							+ books.get(i).getTitle() + "</a>" + " by " + books.get(i).getAuthor();
-					links.add(link);
 				} else {
 
 				}
 
 			}
 
-			//this was my attempt to sort the results in ascending order, I did not have time to get it working. 
-/*			boolean swap = true;
-			while (swap == true) {
-				for (int i = 0; i < links.size()-1; i++) {
 	
-					swap = false;
-					
-					if (Character.toLowerCase(links.get(i).charAt(links.get(i).indexOf('<') + 2)) > Character
-							.toLowerCase(links.get(i + 1).charAt(links.get(i).indexOf('<') + 2)))
-						;
-
-					String toMove = links.get(i);
-					links.set(i, links.get(i + 1));
-					links.set(i + 1, toMove);
-					swap = true;
-					}
-				}
-
-			
-*/
 		}
 
-		else if (category.getTitle() != "") {
+		else if (book.getTitle() != "") {
 
 			for (int i = 0; i < books.size(); i++) {
 
-				if (books.get(i).getTitle().toLowerCase().contains((category.getTitle().toLowerCase()))) {
-					String link = "";
-
-					System.out.println("=================================");
-					System.out.println("TEST");
-
-					link = "<a href=\"http://localhost:8080/book/" + books.get(i).getId() + "\"> "
-							+ books.get(i).getTitle() + "</a>" + " by " + books.get(i).getAuthor();
-					links.add(link);
+				if (books.get(i).getTitle().toLowerCase().contains((book.getTitle().toLowerCase()))) {
+					Long bookId = books.get(i).getId();
+					String bookTitle = books.get(i).getTitle();
+					model.addAttribute("bookId", bookId);
+					model.addAttribute("bookTitle", bookTitle);
 				} else {
 
 				}
@@ -133,29 +124,20 @@ public class BookController {
 		} else {
 			for (int i = 0; i < books.size(); i++) {
 
-				if (books.get(i).getCategory().equals(category.getCategory())) {
-					String link = "";
-
-					System.out.println("=================================");
-					System.out.println("TEST");
-
-					link = "<a href=\"http://localhost:8080/book/" + books.get(i).getId() + "\"> "
-							+ books.get(i).getTitle() + "</a>" + " by " + books.get(i).getAuthor();
-					links.add(link);
+				if (books.get(i).getCategory().equals(book.getCategory())) {
+					Long bookId = books.get(i).getId();
+					String bookTitle = books.get(i).getTitle();
+					model.addAttribute("bookId", bookId);
+					model.addAttribute("bookTitle", bookTitle);
 				} else {
 
 				}
 
 			}
 		}
-		
-		
-		
-		System.out.println("=================================");
-		System.out.println(books.toString());
 
-		map.addAttribute("categories", categories);
-		map.addAttribute("links", links);
+		map.addAttribute("books", books);
+
 		return "bookSearch";
 
 	}

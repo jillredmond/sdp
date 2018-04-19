@@ -1,62 +1,39 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
 <head>
+   <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>   
 <title>Book Search</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
 
-	
-
-
-	<form action="/book/search" method="post" th:object="${category}">
+	<form action="#" th:action="@{/bookSearch}"  method="post" th:object="${book}">
 		<div id="container"></div>
-	
-		<div th:if="${categories != null}">
 
 			<div id="containter"></div>
-		
 			<div id="searchType">
 			
-			
+			<h2>Search For A Book</h2>
 			 Title: <input type="text" name="title" ><input type="submit" value="Submit"><br>
 			 Author: <input type="text" name="author"><input type="submit" value="Submit"><br>
-			Category:
-			<select name="category">
-
-				<option th:each="category : ${categories}" th:value="${category}"
-					th:text="${category}"></option>
-			</select> <input type="submit" value="Submit">
-			
-			
-			
+			Category: <input type="text" name="category"><input type="submit" value="Submit"><br>
 		</div>
-		</div>
-		<select name="order">
-			<option value="ascending">Ascending</option>
-			<option value="descending">Descending</option>
-
-		</select>
-
 		
+		<h4>We found: <h4 th:text="${bookTitle}" /> </h4>
 
 	</form>
-
-
-	<div th:if="${links != null}">
-
+<div>
 		<ul>
-			<li th:each="item : ${links}" th:utext="${item}"></li>
+				<a th:href="@{/viewBook(id=${bookId})}">View book</a>
 		</ul>
 	</div>
-	<div th:unless="${links != null}">
-		<div>No Books existed with the selected criteria.</div>
-	</div>
 </body>
-<script th:inline="javascript">
+<script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
 
-
-
-
-</script>
 </html>
