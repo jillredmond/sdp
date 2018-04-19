@@ -262,64 +262,11 @@ public class BookController {
 		}
 		model.addAttribute("bookNames", bookNames);
 		
-		
-		
-		
 		return "cart";
 		
 	}
 	
 
-	/*@PostMapping("/cart")
-	public String cartPost(Model model) {
-		double payment = 0;
-		String bookTitle = null;
-
-		Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();			
-		User user = userRepository.findByEmail(loggedInUser.getName());
-		
-		ArrayList<Long> bookIds = new ArrayList<Long>();
-		ArrayList<String> bookNames = new ArrayList<String>();
-		
-		for(Item it:user.getItem()) {
-			bookIds.add(it.getBookId());
-		}
-
-		for (int i = 0; i < bookIds.size(); i++) {
-			Long itemId = bookIds.get(i);
-			
-			Book book = bookRepository.findById(itemId)
-					.orElseThrow(() -> new ResourceNotFoundException("Book", "id", itemId));
-			
-			String bookName = book.getTitle();
-			bookNames.add(bookName);	
-		}
-		
-		for (int i = 0; i <bookNames.size(); i++) {
-			String bookName = bookNames.get(i);
-			
-			Book book = bookRepository.findByTitle(bookName);
-			
-			if(book.getStock()>0) {
-				payment = (payment + book.getPrice());
-				bookTitle= (bookTitle + "X" + book.getTitle());
-				//here i am creating a very long string that will contain all books seperated by the X as
-				//I'm not sure how MySql would deal with an attribute containing an arrayList
-			}
-			
-				
-		}
-		
-		Purchase purchase = new Purchase();
-		purchase.setPayment(payment);
-		purchase.setBookTitle(bookTitle);
-		purchaseRepository.save(purchase);
-		
-		user.setItem(null);
-		
-		return "cart";
-		
-	}*/
 	
 	@GetMapping("/purchase")
 	public String purchase(Model model) {
@@ -331,9 +278,7 @@ public class BookController {
 		
 		Calendar today = Calendar.getInstance();
 		today.set(Calendar.HOUR_OF_DAY, 0);
-		
-
-		
+			
 		ArrayList<Book> books = new ArrayList<Book>();
 		
 		
@@ -342,125 +287,51 @@ public class BookController {
 			Book book = bookRepository.findById(it.getBookId())
 					.orElseThrow(() -> new ResourceNotFoundException("Book", "id", it.getBookId()));
 			
-			if(book.getStock() > 0)
-			{
+			if(book.getStock() > 0){
 				book.setStock(book.getStock()-1);
 				bookTitle = bookTitle + "x" + book.getTitle();
 				
-				
-				payment = payment + book.getPrice();
-				
-				
-			}
-			
-			
-			
-			
+				payment = payment + book.getPrice();	
+				System.out.println(payment+"=============================================");
+			}	
 			
 		}
+		System.out.println(payment);
 		
-
 		Purchase purchase = new Purchase();
 		purchase.setBookTitle(bookTitle);
 		purchase.setDate(today.getTime().toString());
 		purchase.setPayment(payment);
 
+		List<Item> wipe = user.getItem();
+		wipe.clear();
+		user.setItem(wipe);
+		
 		user.addPurchase(purchase);
 		purchaseRepository.save(purchase);
 		userRepository.save(user);
 		
-	
-		
 		return "cart";
 		
 	}
+
 	
+	@GetMapping("/viewPurchases")
+	public String showPurchases(Model model){
+		
+		Collection<User> users = userRepository.findAll();
+		
+		
+		model.addAttribute("users", users);
+	//	model.addAttribute("purchases", user.getPurchase());
+		
+		
+	
+		return "viewPurchases";
+	}
 }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	 // Get All Books
-//  @GetMapping("/books")
-//  public List<Book> getAllBooks(){
-//      return bookRepository.findAll();
-//  }
-	
-//	
-//	@ModelAttribute("book")
-//	public Book book() {
-//		return new Book();
-//	}
-	
-//	@GetMapping("/addbook")
-//			public String showBookForm(Model model) {
-//				return "addBook";
-//			}
-	
-//	@PostMapping("/addBook")
-//	public String addNewBook(@ModelAttribute("book") @Valid @RequestBody Book book, BindingResult result,Model model) {
-//		
-//		bookRepository.save(book);
-//		model.addAttribute("bookTitle", book.getTitle());
-//		
-//		return "addBook";
-//		
-//	}
-	
-    
-// // Get All Books
-//    @GetMapping("/books")
-//    public List<Book> getAllBooks(){
-//        return bookRepository.findAll();
-//    }
-//    
-// // Create a new Book
-//    @PostMapping("/books")
-//    public Book createBook(@Valid @RequestBody Book book) {
-//        return bookRepository.save(book);
-//    }
-//    
-// // Get a Single Book
-//    @GetMapping("/books/{id}")
-//    public Book getBookById(@PathVariable(value = "id") Long bookId) {
-//        return bookRepository.findById(bookId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Book", "id", bookId));
-//    }
-//    
-// // Update a Book
-//    @PutMapping("/books/{id}")
-//    public Book updateBook(@PathVariable(value = "id") Long bookId,
-//                                            @Valid @RequestBody Book bookDetails) {
-//
-//    	Book book = bookRepository.findById(bookId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Book", "id", bookId));
-//
-//    	book.setTitle(bookDetails.getTitle());
-//    	book.setAuthor(bookDetails.getAuthor());
-//    	book.setCategory(bookDetails.getCategory());
-//    	book.setPrice(bookDetails.getPrice());
-//
-//        Book updatedNote = bookRepository.save(book);
-//        return updatedNote;
-//    }
-//    
-// // Delete a Book
-//    @DeleteMapping("/books/{id}")
-//    public ResponseEntity<?> deleteBook(@PathVariable(value = "id") Long bookId) {
-//    	Book book = bookRepository.findById(bookId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Book", "id", bookId));
-//
-//    	bookRepository.delete(book);
-//
-//        return ResponseEntity.ok().build();
-//    }
 
 
+
+
+	

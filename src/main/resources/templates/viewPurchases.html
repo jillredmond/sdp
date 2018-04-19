@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>User Details & Purchases</title>
+</head>
+<body>
+<h2>User Details & Their purchases</h2>
+	<div th:each ="user : ${users}">
+	First Name: <h4 th:text="${user.firstName}" />
+	Last Name: <h4 th:text="${user.lastName}" />
+	Email: <h4 th:text="${user.lastName}" />
+	
+	<h4>Purchases:</h4>
+	  	<div th:each="purchase : ${user.purchase}">
+    <h4 th:text="${purchase.payment}"/>
+    <h4 th:text="${purchase.bookTitle}"/>
+	</div>
+	</div>
+
+
+</body>
+</html>
