@@ -122,5 +122,9 @@ public class Book implements Serializable {
 
 			getRating().add(rating);
 		}
+		public void addPurchase(Purchase purchase){
+
+			getPurchase().add(purchase);
+		}
 
 }

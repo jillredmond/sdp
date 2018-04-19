@@ -218,6 +218,11 @@ public class User {
 
 		getItem().add(item);
 	}
+	
+	public void addPurchase(Purchase purchase){
+
+		getPurchase().add(purchase);
+	}
 
 
 }

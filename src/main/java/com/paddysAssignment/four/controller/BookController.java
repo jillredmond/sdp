@@ -2,6 +2,7 @@ package com.paddysAssignment.four.controller;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale.Category;
@@ -269,7 +270,7 @@ public class BookController {
 	}
 	
 
-	@PostMapping("/cart")
+	/*@PostMapping("/cart")
 	public String cartPost(Model model) {
 		double payment = 0;
 		String bookTitle = null;
@@ -315,6 +316,60 @@ public class BookController {
 		purchaseRepository.save(purchase);
 		
 		user.setItem(null);
+		
+		return "cart";
+		
+	}*/
+	
+	@GetMapping("/purchase")
+	public String purchase(Model model) {
+		double payment = 0;
+		String bookTitle = "";
+
+		Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();			
+		User user = userRepository.findByEmail(loggedInUser.getName());
+		
+		Calendar today = Calendar.getInstance();
+		today.set(Calendar.HOUR_OF_DAY, 0);
+		
+
+		
+		ArrayList<Book> books = new ArrayList<Book>();
+		
+		
+		for(Item it:user.getItem()) {
+			
+			Book book = bookRepository.findById(it.getBookId())
+					.orElseThrow(() -> new ResourceNotFoundException("Book", "id", it.getBookId()));
+			
+			if(book.getStock() > 0)
+			{
+				book.setStock(book.getStock()-1);
+				bookTitle = bookTitle + "x" + book.getTitle();
+				
+				
+				payment = payment + book.getPrice();
+				
+				
+			}
+			
+			
+			
+			
+			
+		}
+		
+
+		Purchase purchase = new Purchase();
+		purchase.setBookTitle(bookTitle);
+		purchase.setDate(today.getTime().toString());
+		purchase.setPayment(payment);
+
+		user.addPurchase(purchase);
+		purchaseRepository.save(purchase);
+		userRepository.save(user);
+		
+	
 		
 		return "cart";
 		
