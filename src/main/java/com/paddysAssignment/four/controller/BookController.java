@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.paddysAssignment.four.exception.ResourceNotFoundException;
 import com.paddysAssignment.four.model.Book;
 import com.paddysAssignment.four.model.Item;
+import com.paddysAssignment.four.model.Purchase;
 import com.paddysAssignment.four.model.Rating;
 import com.paddysAssignment.four.model.User;
 import com.paddysAssignment.four.repository.BookRepository;
@@ -233,7 +234,8 @@ public class BookController {
 	return "addCart";
 	}
 	
-	@GetMapping("/cart")
+
+	@RequestMapping(value = "/cart", method = RequestMethod.GET)
 	public String cart(Model model) {
 		
 		Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
@@ -269,12 +271,50 @@ public class BookController {
 
 	@PostMapping("/cart")
 	public String cartPost(Model model) {
+		double payment = 0;
+		String bookTitle = null;
 
 		Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();			
 		User user = userRepository.findByEmail(loggedInUser.getName());
 		
-	//	model.addAttribute("bookNames", bookNames);
+		ArrayList<Long> bookIds = new ArrayList<Long>();
+		ArrayList<String> bookNames = new ArrayList<String>();
 		
+		for(Item it:user.getItem()) {
+			bookIds.add(it.getBookId());
+		}
+
+		for (int i = 0; i < bookIds.size(); i++) {
+			Long itemId = bookIds.get(i);
+			
+			Book book = bookRepository.findById(itemId)
+					.orElseThrow(() -> new ResourceNotFoundException("Book", "id", itemId));
+			
+			String bookName = book.getTitle();
+			bookNames.add(bookName);	
+		}
+		
+		for (int i = 0; i <bookNames.size(); i++) {
+			String bookName = bookNames.get(i);
+			
+			Book book = bookRepository.findByTitle(bookName);
+			
+			if(book.getStock()>0) {
+				payment = (payment + book.getPrice());
+				bookTitle= (bookTitle + "X" + book.getTitle());
+				//here i am creating a very long string that will contain all books seperated by the X as
+				//I'm not sure how MySql would deal with an attribute containing an arrayList
+			}
+			
+				
+		}
+		
+		Purchase purchase = new Purchase();
+		purchase.setPayment(payment);
+		purchase.setBookTitle(bookTitle);
+		purchaseRepository.save(purchase);
+		
+		user.setItem(null);
 		
 		return "cart";
 		
